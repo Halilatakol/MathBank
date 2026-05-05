@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.mathbank.app-mergeDebugResources-48:/values-v16/values-v16.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\hz\\.gradle\\caches\\transforms-3\\c38b868273d24526b4544dd6701aca5a\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "5",
+                        "endColumns": "12",
+                        "endOffsets": "223"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "121",
+                        "endLines": "6",
+                        "endColumns": "12",
+                        "endOffsets": "289"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\hz\\.gradle\\caches\\transforms-3\\0635813c86515cf54de11f45f54311ac\\transformed\\core-1.12.0\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                }
+            ]
+        }
+    ]
+}

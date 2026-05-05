@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/item_question.xml",
+        "source": "com.mathbank.app-main-52:/layout/item_question.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/item_test.xml",
+        "source": "com.mathbank.app-main-52:/layout/item_test.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/activity_question_bank.xml",
+        "source": "com.mathbank.app-main-52:/layout/activity_question_bank.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/dialog_api_key.xml",
+        "source": "com.mathbank.app-main-52:/layout/dialog_api_key.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/activity_solve_test.xml",
+        "source": "com.mathbank.app-main-52:/layout/activity_solve_test.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/activity_test_result.xml",
+        "source": "com.mathbank.app-main-52:/layout/activity_test_result.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/activity_processing.xml",
+        "source": "com.mathbank.app-main-52:/layout/activity_processing.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/activity_create_test.xml",
+        "source": "com.mathbank.app-main-52:/layout/activity_create_test.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/activity_question_detail.xml",
+        "source": "com.mathbank.app-main-52:/layout/activity_question_detail.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/activity_settings.xml",
+        "source": "com.mathbank.app-main-52:/layout/activity_settings.xml"
+    },
+    {
+        "merged": "com.mathbank.app-mergeDebugResources-49:/layout/activity_main.xml",
+        "source": "com.mathbank.app-main-52:/layout/activity_main.xml"
+    }
+]

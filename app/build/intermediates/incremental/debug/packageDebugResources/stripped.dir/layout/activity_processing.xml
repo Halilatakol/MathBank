@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Analiz ediliyor:"
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:layout_marginTop="32dp" />
+
+    <TextView
+        android:id="@+id/tvPdfName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary"
+        android:layout_marginBottom="32dp" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:trackCornerRadius="8dp"
+        app:indicatorColor="@color/primary"
+        app:trackColor="@color/surface_variant" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tvPageInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sayfa 0 / 0"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary" />
+
+        <TextView
+            android:id="@+id/tvQuestionsFound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 soru bulundu"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/accent" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hazirlaniyor..."
+        android:textSize="16sp"
+        android:textColor="@color/primary"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        android:layout_marginBottom="16dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:fontFamily="monospace"
+                android:lineSpacingMultiplier="1.4" />
+        </ScrollView>
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/error"
+        android:textSize="13sp"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/lottieSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="✅ Tamamlandi!"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancel"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Islemi Durdur"
+        android:textColor="@color/error"
+        app:strokeColor="@color/error"
+        app:cornerRadius="12dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Soru Bankasina Git"
+        app:backgroundTint="@color/success"
+        app:cornerRadius="12dp"
+        android:visibility="gone" />
+
+</LinearLayout>

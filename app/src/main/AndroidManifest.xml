@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <application
+        android:name=".MathBankApp"
+        android:allowBackup="true"
+        android:label="MathBank"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MathBank"
+        android:largeHeap="true">
+
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.activities.ProcessingActivity" android:exported="false" />
+        <activity android:name=".ui.activities.QuestionBankActivity" android:exported="false" />
+        <activity android:name=".ui.activities.CreateTestActivity" android:exported="false" />
+        <activity android:name=".ui.activities.SolveTestActivity" android:exported="false" />
+        <activity android:name=".ui.activities.TestResultActivity" android:exported="false" />
+        <activity android:name=".ui.activities.QuestionDetailActivity" android:exported="false" />
+        <activity android:name=".ui.activities.SettingsActivity" android:exported="false" />
+
+    </application>
+
+</manifest>

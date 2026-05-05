@@ -1,0 +1,50 @@
+[
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_activity_solve_test.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/activity_solve_test.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_activity_settings.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/activity_settings.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_activity_question_detail.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/activity_question_detail.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_item_test.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/item_test.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/drawable_bg_option.xml.flat",
+        "source": "com.mathbank.app-main-52:/drawable/bg_option.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_activity_create_test.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/activity_create_test.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_item_question.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/item_question.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_activity_processing.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/activity_processing.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_activity_question_bank.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/activity_question_bank.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_activity_test_result.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/activity_test_result.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_activity_main.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.mathbank.app-merged_res-50:/layout_dialog_api_key.xml.flat",
+        "source": "com.mathbank.app-main-52:/layout/dialog_api_key.xml"
+    }
+]

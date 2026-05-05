@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MathBank</string>
+    <string name="select_pdf">PDF Seç</string>
+    <string name="question_bank">Soru Bankası</string>
+    <string name="create_test">Test Oluştur</string>
+    <string name="settings">Ayarlar</string>
+    <string name="processing">İşleniyor...</string>
+    <string name="easy">Kolay</string>
+    <string name="medium">Orta</string>
+    <string name="hard">Zor</string>
+    <string name="all">Tümü</string>
+    <string name="cancel">İptal</string>
+    <string name="save">Kaydet</string>
+    <string name="done">Tamam</string>
+    <string name="next">Sonraki</string>
+    <string name="previous">Önceki</string>
+    <string name="finish">Bitir</string>
+    <string name="score">Puan</string>
+    <string name="correct">Doğru</string>
+    <string name="wrong">Yanlış</string>
+    <string name="empty">Boş</string>
+</resources>

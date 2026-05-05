@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MathBank" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+
+        <!-- Card style -->
+        <item name="materialCardViewStyle">@style/Widget.MathBank.CardView</item>
+
+        <!-- Button style -->
+        <item name="materialButtonStyle">@style/Widget.MathBank.Button</item>
+
+        <!-- Chip style -->
+        <item name="chipStyle">@style/Widget.MathBank.Chip</item>
+    </style>
+
+    <style name="Widget.MathBank.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="Widget.MathBank.Button" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">10dp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+    </style>
+
+    <style name="Widget.MathBank.Chip" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipCornerRadius">20dp</item>
+    </style>
+
+    <!-- Toolbar -->
+    <style name="Theme.MathBank.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/primary</item>
+        <item name="titleTextColor">@color/white</item>
+    </style>
+
+    <!-- Topic Chip -->
+    <style name="Style.MathBank.TopicChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="chipBackgroundColor">@color/surface_variant</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+</resources>
