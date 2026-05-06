@@ -3246,10 +3246,9 @@ id btnPrevious
 id btnQuestionBank
 id btnReturnHome
 id btnReviewAnswers
-id btnSaveApiKey
+id btnSave
 id btnSelectPdf
 id btnSettings
-id btnToggleApiKey
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3342,6 +3341,8 @@ id enterAlways
 id enterAlwaysCollapsed
 id escape
 id etApiKey
+id etGeminiKey
+id etOpenRouterKey
 id etSearch
 id etTestName
 id exitUntilCollapsed
@@ -3532,6 +3533,8 @@ id progress_circular
 id progress_horizontal
 id questionContainer
 id radio
+id radioGemini
+id radioOpenRouter
 id ratio
 id rbA
 id rbB

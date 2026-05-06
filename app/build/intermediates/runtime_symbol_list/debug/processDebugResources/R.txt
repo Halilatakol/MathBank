@@ -3245,10 +3245,9 @@ int id btnPrevious 0x7f08006c
 int id btnQuestionBank 0x7f08006d
 int id btnReturnHome 0x7f08006e
 int id btnReviewAnswers 0x7f08006f
-int id btnSaveApiKey 0x7f080070
+int id btnSave 0x7f08024d
 int id btnSelectPdf 0x7f080071
 int id btnSettings 0x7f080072
-int id btnToggleApiKey 0x7f080073
 int id buttonPanel 0x7f080074
 int id cache_measures 0x7f080075
 int id callMeasure 0x7f080076
@@ -3341,6 +3340,8 @@ int id enterAlways 0x7f0800cc
 int id enterAlwaysCollapsed 0x7f0800cd
 int id escape 0x7f0800ce
 int id etApiKey 0x7f0800cf
+int id etGeminiKey 0x7f08024e
+int id etOpenRouterKey 0x7f08024f
 int id etSearch 0x7f0800d0
 int id etTestName 0x7f0800d1
 int id exitUntilCollapsed 0x7f0800d2
@@ -3531,6 +3532,8 @@ int id progress_circular 0x7f08018a
 int id progress_horizontal 0x7f08018b
 int id questionContainer 0x7f08018c
 int id radio 0x7f08018d
+int id radioGemini 0x7f080250
+int id radioOpenRouter 0x7f080251
 int id ratio 0x7f08018e
 int id rbA 0x7f08018f
 int id rbB 0x7f080190

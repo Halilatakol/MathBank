@@ -13,7 +13,6 @@
         android:background="@color/primary"
         android:gravity="center_vertical"
         android:padding="8dp">
-
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="40dp"
@@ -21,7 +20,6 @@
             android:src="@android:drawable/ic_media_previous"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:tint="@color/white" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,117 +33,163 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Model Secimi -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
                 android:layout_marginBottom="16dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="AI Model Secimi"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:layout_marginBottom="12dp" />
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <RadioButton
+                            android:id="@+id/radioOpenRouter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="OpenRouter (Ucretsiz - Otomatik)"
+                            android:checked="true"
+                            android:padding="8dp" />
+                        <RadioButton
+                            android:id="@+id/radioGemini"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Google Gemini (Gunluk 1500 istek)"
+                            android:padding="8dp" />
+                    </RadioGroup>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
+            <!-- OpenRouter Key -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:layout_marginBottom="16dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="OpenRouter API Anahtari"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
-                        android:layout_marginBottom="8dp" />
-
+                        android:layout_marginBottom="4dp" />
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="openrouter.ai adresinden ucretsiz alabilirsiniz."
-                        android:textSize="13sp"
+                        android:text="openrouter.ai → Sign Up → Keys"
+                        android:textSize="12sp"
                         android:textColor="@color/text_secondary"
-                        android:layout_marginBottom="12dp" />
-
+                        android:layout_marginBottom="8dp" />
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="sk-or-..."
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_marginBottom="12dp">
-
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etApiKey"
+                            android:id="@+id/etOpenRouterKey"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPassword"
                             android:fontFamily="monospace" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnToggleApiKey"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Goster"
-                            android:textColor="@color/primary"
-                            app:strokeColor="@color/primary"
-                            app:cornerRadius="8dp"
-                            android:layout_marginEnd="8dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnSaveApiKey"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Kaydet"
-                            app:backgroundTint="@color/primary"
-                            app:cornerRadius="8dp" />
-                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Gemini Key -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="@color/surface_variant"
-                app:cardElevation="0dp">
-
+                app:cardElevation="3dp"
+                android:layout_marginBottom="24dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ucretsiz Kullanim"
-                        android:textSize="14sp"
+                        android:text="Google Gemini API Anahtari"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
-                        android:layout_marginBottom="8dp" />
-
+                        android:layout_marginBottom="4dp" />
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="aistudio.google.com → Get API Key"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="8dp" />
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tamamen ucretsiz\nGunluk ucretsiz istek limiti\nKart bilgisi gerekmez"
-                        android:textSize="13sp"
-                        android:textColor="@color/text_secondary"
-                        android:lineSpacingMultiplier="1.5" />
+                        android:hint="AIza..."
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etGeminiKey"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:fontFamily="monospace" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Kaydet -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Kaydet"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/primary"
+                app:cornerRadius="14dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Bilgi -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/surface_variant"
+                app:cardElevation="0dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp"
+                    android:text="OpenRouter: Gunluk 200 istek ucretsiz\nGemini: Gunluk 1500 istek ucretsiz\n\nGemini Turkiye'de bazi operatorlerde calismayabilir."
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:lineSpacingMultiplier="1.5" />
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>

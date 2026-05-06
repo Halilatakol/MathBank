@@ -1,7 +1,6 @@
 package com.mathbank.ui.activities
 
 import android.os.Bundle
-import android.text.InputType
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -25,45 +24,52 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun loadSettings() {
         lifecycleScope.launch {
-            val apiKey = settingsManager.getApiKey()
-            if (apiKey.isNotEmpty()) {
-                binding.etApiKey.setText("sk-or-..." + apiKey.takeLast(6))
+            val orKey = settingsManager.getOpenRouterKey()
+            val gemKey = settingsManager.getGeminiKey()
+            val selectedModel = settingsManager.getSelectedModel()
+
+            if (orKey.isNotEmpty()) {
+                binding.etOpenRouterKey.setText("sk-or-..." + orKey.takeLast(6))
+            }
+            if (gemKey.isNotEmpty()) {
+                binding.etGeminiKey.setText("AIza..." + gemKey.takeLast(6))
+            }
+            if (selectedModel == SettingsManager.MODEL_GEMINI) {
+                binding.radioGemini.isChecked = true
+            } else {
+                binding.radioOpenRouter.isChecked = true
             }
         }
     }
 
     private fun setupUI() {
-        var isApiKeyVisible = false
-        binding.btnToggleApiKey.setOnClickListener {
-            isApiKeyVisible = !isApiKeyVisible
+        binding.btnSave.setOnClickListener {
             lifecycleScope.launch {
-                val key = settingsManager.getApiKey()
-                binding.etApiKey.setText(
-                    if (isApiKeyVisible) key else "sk-or-..." + key.takeLast(6)
-                )
-                binding.etApiKey.inputType = if (isApiKeyVisible)
-                    InputType.TYPE_CLASS_TEXT
-                else
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
-        }
+                val orKey = binding.etOpenRouterKey.text.toString().trim()
+                val gemKey = binding.etGeminiKey.text.toString().trim()
 
-        binding.btnSaveApiKey.setOnClickListener {
-            val key = binding.etApiKey.text.toString().trim()
-            if (key.length > 10) {
-                lifecycleScope.launch {
-                    settingsManager.saveApiKey(key)
-                    Toast.makeText(
-                        this@SettingsActivity,
-                        "API anahtari kaydedildi",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                if (orKey.isNotEmpty() && !orKey.startsWith("sk-or-...")) {
+                    settingsManager.saveOpenRouterKey(orKey)
                 }
-            } else {
-                Toast.makeText(this, "Gecersiz API anahtari", Toast.LENGTH_SHORT).show()
+                if (gemKey.isNotEmpty() && !gemKey.startsWith("AIza...")) {
+                    settingsManager.saveGeminiKey(gemKey)
+                }
+
+                val selectedModel = if (binding.radioGemini.isChecked) {
+                    SettingsManager.MODEL_GEMINI
+                } else {
+                    SettingsManager.MODEL_OPENROUTER
+                }
+                settingsManager.saveSelectedModel(selectedModel)
+
+                Toast.makeText(
+                    this@SettingsActivity,
+                    "Ayarlar kaydedildi",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
             }
         }
-
         binding.btnBack.setOnClickListener { finish() }
     }
 }

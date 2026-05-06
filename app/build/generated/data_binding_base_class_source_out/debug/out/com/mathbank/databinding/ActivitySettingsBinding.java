@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -25,22 +26,31 @@ public final class ActivitySettingsBinding implements ViewBinding {
   public final ImageButton btnBack;
 
   @NonNull
-  public final MaterialButton btnSaveApiKey;
+  public final MaterialButton btnSave;
 
   @NonNull
-  public final MaterialButton btnToggleApiKey;
+  public final TextInputEditText etGeminiKey;
 
   @NonNull
-  public final TextInputEditText etApiKey;
+  public final TextInputEditText etOpenRouterKey;
+
+  @NonNull
+  public final RadioButton radioGemini;
+
+  @NonNull
+  public final RadioButton radioOpenRouter;
 
   private ActivitySettingsBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnBack,
-      @NonNull MaterialButton btnSaveApiKey, @NonNull MaterialButton btnToggleApiKey,
-      @NonNull TextInputEditText etApiKey) {
+      @NonNull MaterialButton btnSave, @NonNull TextInputEditText etGeminiKey,
+      @NonNull TextInputEditText etOpenRouterKey, @NonNull RadioButton radioGemini,
+      @NonNull RadioButton radioOpenRouter) {
     this.rootView = rootView;
     this.btnBack = btnBack;
-    this.btnSaveApiKey = btnSaveApiKey;
-    this.btnToggleApiKey = btnToggleApiKey;
-    this.etApiKey = etApiKey;
+    this.btnSave = btnSave;
+    this.etGeminiKey = etGeminiKey;
+    this.etOpenRouterKey = etOpenRouterKey;
+    this.radioGemini = radioGemini;
+    this.radioOpenRouter = radioOpenRouter;
   }
 
   @Override
@@ -76,26 +86,38 @@ public final class ActivitySettingsBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.btnSaveApiKey;
-      MaterialButton btnSaveApiKey = ViewBindings.findChildViewById(rootView, id);
-      if (btnSaveApiKey == null) {
+      id = R.id.btnSave;
+      MaterialButton btnSave = ViewBindings.findChildViewById(rootView, id);
+      if (btnSave == null) {
         break missingId;
       }
 
-      id = R.id.btnToggleApiKey;
-      MaterialButton btnToggleApiKey = ViewBindings.findChildViewById(rootView, id);
-      if (btnToggleApiKey == null) {
+      id = R.id.etGeminiKey;
+      TextInputEditText etGeminiKey = ViewBindings.findChildViewById(rootView, id);
+      if (etGeminiKey == null) {
         break missingId;
       }
 
-      id = R.id.etApiKey;
-      TextInputEditText etApiKey = ViewBindings.findChildViewById(rootView, id);
-      if (etApiKey == null) {
+      id = R.id.etOpenRouterKey;
+      TextInputEditText etOpenRouterKey = ViewBindings.findChildViewById(rootView, id);
+      if (etOpenRouterKey == null) {
         break missingId;
       }
 
-      return new ActivitySettingsBinding((LinearLayout) rootView, btnBack, btnSaveApiKey,
-          btnToggleApiKey, etApiKey);
+      id = R.id.radioGemini;
+      RadioButton radioGemini = ViewBindings.findChildViewById(rootView, id);
+      if (radioGemini == null) {
+        break missingId;
+      }
+
+      id = R.id.radioOpenRouter;
+      RadioButton radioOpenRouter = ViewBindings.findChildViewById(rootView, id);
+      if (radioOpenRouter == null) {
+        break missingId;
+      }
+
+      return new ActivitySettingsBinding((LinearLayout) rootView, btnBack, btnSave, etGeminiKey,
+          etOpenRouterKey, radioGemini, radioOpenRouter);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

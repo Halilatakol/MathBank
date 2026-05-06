@@ -18,12 +18,18 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 
-class ClaudeService(private val apiKey: String) {
-
+class ClaudeService(
+    private val apiKey: String,
+    private val model: String = MODEL_OPENROUTER
+) {
     companion object {
-        private const val TAG = "OpenRouterService"
-        private const val API_URL = "https://openrouter.ai/api/v1/chat/completions"
-        private const val MODEL = "openrouter/free"
+        private const val TAG = "AIService"
+        const val MODEL_OPENROUTER = "openrouter"
+        const val MODEL_GEMINI = "gemini"
+        private const val OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+        private const val OPENROUTER_MODEL = "openrouter/free"
+        private const val GEMINI_MODEL = "gemini-2.0-flash"
+        private const val GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models"
         private const val MAX_RETRIES = 3
     }
 
@@ -40,96 +46,98 @@ class ClaudeService(private val apiKey: String) {
         pageNumber: Int,
         pdfName: String
     ): Result<ClaudeAnalysisResult> = withContext(Dispatchers.IO) {
-
         val base64Image = bitmapToBase64(bitmap)
-        val prompt = buildPrompt(pageNumber)
-        val requestBody = buildRequestBody(base64Image, prompt)
-
+        val imgH = bitmap.height
+        val imgW = bitmap.width
+        val prompt = buildPrompt(imgW, imgH)
         var lastError: Exception = Exception("Bilinmeyen hata")
 
         for (attempt in 0 until MAX_RETRIES) {
             try {
-                val request = Request.Builder()
-                    .url(API_URL)
-                    .addHeader("Authorization", "Bearer $apiKey")
-                    .addHeader("Content-Type", "application/json")
-                    .addHeader("HTTP-Referer", "https://github.com/Halilatakol/MathBank")
-                    .addHeader("X-Title", "MathBank")
-                    .post(requestBody.toRequestBody("application/json".toMediaType()))
-                    .build()
+                val request = if (model == MODEL_GEMINI) {
+                    buildGeminiRequest(base64Image, prompt)
+                } else {
+                    buildOpenRouterRequest(base64Image, prompt)
+                }
 
                 val response = client.newCall(request).execute()
-                val responseBody = response.body?.string() ?: ""
+                val body = response.body?.string() ?: ""
 
                 when {
                     response.code == 429 -> {
-                        // Rate limit - bekle ve tekrar dene
-                        val waitSeconds = (attempt + 1) * 30L
-                        Log.w(TAG, "Rate limit (429), ${waitSeconds}s bekleniyor... (deneme ${attempt + 1}/$MAX_RETRIES)")
-                        delay(waitSeconds * 1000)
-                        lastError = Exception("Rate limit asıldı")
+                        val wait = (attempt + 1) * 60L
+                        Log.w(TAG, "Rate limit, ${wait}s bekleniyor...")
+                        delay(wait * 1000)
+                        lastError = Exception("Rate limit asildi")
                         continue
                     }
                     response.code == 503 || response.code == 502 -> {
-                        // Servis geçici kapalı
-                        val waitSeconds = (attempt + 1) * 15L
-                        Log.w(TAG, "Servis hatası (${response.code}), ${waitSeconds}s bekleniyor...")
-                        delay(waitSeconds * 1000)
-                        lastError = Exception("Servis gecici kapali: ${response.code}")
+                        val wait = (attempt + 1) * 20L
+                        delay(wait * 1000)
+                        lastError = Exception("Servis gecici kapali")
                         continue
                     }
                     !response.isSuccessful -> {
-                        Log.e(TAG, "API Hatası ${response.code}: $responseBody")
                         return@withContext Result.failure(
-                            Exception("API Hatasi: ${response.code} - $responseBody")
+                            Exception("API Hatasi: ${response.code} - $body")
                         )
                     }
                     else -> {
-                        // Basarili
-                        return@withContext Result.success(parseResponse(responseBody))
+                        val result = if (model == MODEL_GEMINI) {
+                            parseGeminiResponse(body, imgW, imgH)
+                        } else {
+                            parseOpenRouterResponse(body, imgW, imgH)
+                        }
+                        return@withContext Result.success(result)
                     }
                 }
-
             } catch (e: Exception) {
                 Log.e(TAG, "Deneme ${attempt + 1} hatasi: ${e.message}")
                 lastError = e
-                if (attempt < MAX_RETRIES - 1) {
-                    delay(10_000)
-                }
+                if (attempt < MAX_RETRIES - 1) delay(10_000)
             }
         }
-
         Result.failure(lastError)
     }
 
-    private fun buildPrompt(pageNumber: Int): String = """
-Sen bir matematik sorusu analiz uzmanisın. Bu goruntu bir kitabin $pageNumber. sayfasidir.
+    private fun buildGeminiRequest(base64Image: String, prompt: String): Request {
+        val url = "$GEMINI_BASE_URL/$GEMINI_MODEL:generateContent?key=$apiKey"
+        val bodyMap = mapOf(
+            "contents" to listOf(
+                mapOf(
+                    "parts" to listOf(
+                        mapOf(
+                            "inline_data" to mapOf(
+                                "mime_type" to "image/jpeg",
+                                "data" to base64Image
+                            )
+                        ),
+                        mapOf("text" to prompt)
+                    )
+                )
+            ),
+            "generationConfig" to mapOf(
+                "temperature" to 0.1,
+                "maxOutputTokens" to 8192,
+                "responseMimeType" to "application/json"
+            ),
+            "safetySettings" to listOf(
+                mapOf("category" to "HARM_CATEGORY_HARASSMENT", "threshold" to "BLOCK_NONE"),
+                mapOf("category" to "HARM_CATEGORY_HATE_SPEECH", "threshold" to "BLOCK_NONE"),
+                mapOf("category" to "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold" to "BLOCK_NONE"),
+                mapOf("category" to "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold" to "BLOCK_NONE")
+            )
+        )
+        return Request.Builder()
+            .url(url)
+            .addHeader("Content-Type", "application/json")
+            .post(gson.toJson(bodyMap).toRequestBody("application/json".toMediaType()))
+            .build()
+    }
 
-Sayfadaki TUM sorulari tespit et. Her turlu duzeni destekle (numarali, cizgili, bosluklu, karma).
-
-Her soru icin JSON dondur:
-- questionNumber: soru numarasi (int)
-- text: soru metninin tamami
-- topic: Cebir|Geometri|Analitik Geometri|Trigonometri|Analiz|Sayilar|Olasilik|Kombinatorik|Dizi-Seri|Logaritma|Fonksiyonlar
-- subtopic: spesifik alt konu
-- difficulty: EASY|MEDIUM|HARD
-- options: siklar varsa liste ["A) ...", "B) ..."], yoksa []
-- correctAnswer: cevap varsa yaz yoksa null
-- hasFigure: sekil veya grafik var mi (true/false)
-- questionType: MULTIPLE_CHOICE|OPEN_ENDED|TRUE_FALSE
-- boundingBox: {"top":0.0,"left":0.0,"bottom":1.0,"right":1.0}
-- Matematik sembollerini doğru yaz: kök işareti için √, pi için π, 
-  kesir için / kullan. Örnek: √3, 2π, 3/2
-- Soru metnini eksiksiz ve doğru yaz, hiçbir karakteri atlama
-SADECE JSON dondur, baska hicbir sey yazma:
-{"questions":[...]}
-
-Sayfa bossa veya soru yoksa: {"questions":[]}
-    """.trimIndent()
-
-    private fun buildRequestBody(base64Image: String, prompt: String): String {
-        val body = mapOf(
-            "model" to MODEL,
+    private fun buildOpenRouterRequest(base64Image: String, prompt: String): Request {
+        val bodyMap = mapOf(
+            "model" to OPENROUTER_MODEL,
             "messages" to listOf(
                 mapOf(
                     "role" to "user",
@@ -140,48 +148,102 @@ Sayfa bossa veya soru yoksa: {"questions":[]}
                                 "url" to "data:image/jpeg;base64,$base64Image"
                             )
                         ),
-                        mapOf(
-                            "type" to "text",
-                            "text" to prompt
-                        )
+                        mapOf("type" to "text", "text" to prompt)
                     )
                 )
             )
         )
-        return gson.toJson(body)
+        return Request.Builder()
+            .url(OPENROUTER_URL)
+            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Content-Type", "application/json")
+            .addHeader("HTTP-Referer", "https://github.com/Halilatakol/MathBank")
+            .addHeader("X-Title", "MathBank")
+            .post(gson.toJson(bodyMap).toRequestBody("application/json".toMediaType()))
+            .build()
     }
 
-    private fun parseResponse(responseBody: String): ClaudeAnalysisResult {
+    /**
+     * Bu prompt tek bir soru gorselini analiz eder (OCR tarafindan kirpilmis).
+     * Sorunun tam icerigi, konusu, zorlugu ve siklari cikarilir.
+     */
+    private fun buildPrompt(imgW: Int, imgH: Int): String = """
+Sen bir matematik sorusu analiz uzmanisın.
+Bu goruntu bir matematik sorusunun gorselidir (${imgW}x${imgH} piksel).
+
+Bu goruntudeki TEK soruyu analiz et ve JSON formatinda don:
+
+- questionNumber: soru numarasi (gorsel icerisindeki numara, yoksa 1)
+- text: sorunun TAM metni, hicbir sey atlama
+  * Matematiksel semboller: √ (kok), π (pi), ² (kare), ³ (kup), ≤ ≥ (esitsizlik)
+  * Kesirleri: 3/2 formatinda yaz
+  * Ustel ifadeler: x^2 formatinda yaz
+- topic: Cebir|Geometri|Analitik Geometri|Trigonometri|Analiz|Sayilar|Olasilik|Kombinatorik|Dizi-Seri|Logaritma|Fonksiyonlar
+- subtopic: cok spesifik alt konu (ornek: "Koni Hacmi", "Ikinci Dereceden Denklem Kokleri")
+- difficulty: EASY (tek adim)|MEDIUM (2-3 adim)|HARD (4+ adim, multi-konu)
+- options: siklar varsa ["A) ...", "B) ...", "C) ...", "D) ...", "E) ..."], yoksa []
+- correctAnswer: PDF'de cevap gozukuyorsa yaz, yoksa null
+- hasFigure: goruntude geometrik sekil, koordinat sistemi veya grafik var mi (true/false)
+- questionType: MULTIPLE_CHOICE|OPEN_ENDED|TRUE_FALSE
+- topPx: sorunun goruntudeki en ust noktasi (piksel, 0-$imgH)
+- bottomPx: sorunun goruntudeki en alt noktasi (piksel, 0-$imgH)
+
+SADECE JSON dondur, baska hicbir sey yazma:
+{"questions":[{"questionNumber":1,"text":"Sorunun tam metni...","topic":"Geometri","subtopic":"Koni Hacmi","difficulty":"MEDIUM","options":["A) 67","B) 72","C) 74","D) 76","E) 78"],"correctAnswer":null,"hasFigure":true,"questionType":"MULTIPLE_CHOICE","topPx":0,"bottomPx":$imgH}]}
+
+Gorsel bos veya soru yoksa: {"questions":[]}
+    """.trimIndent()
+
+    private fun parseGeminiResponse(body: String, w: Int, h: Int): ClaudeAnalysisResult {
         return try {
-            val json = JsonParser.parseString(responseBody).asJsonObject
-            val content = json.getAsJsonArray("choices")
+            val json = JsonParser.parseString(body).asJsonObject
+            val text = json.getAsJsonArray("candidates")
+                ?.get(0)?.asJsonObject
+                ?.getAsJsonObject("content")
+                ?.getAsJsonArray("parts")
+                ?.get(0)?.asJsonObject
+                ?.get("text")?.asString ?: "{\"questions\":[]}"
+            parseQuestions(text, w, h)
+        } catch (e: Exception) {
+            Log.e(TAG, "Gemini parse hatasi: ${e.message}")
+            ClaudeAnalysisResult(questions = emptyList())
+        }
+    }
+
+    private fun parseOpenRouterResponse(body: String, w: Int, h: Int): ClaudeAnalysisResult {
+        return try {
+            val json = JsonParser.parseString(body).asJsonObject
+            val text = json.getAsJsonArray("choices")
                 ?.get(0)?.asJsonObject
                 ?.getAsJsonObject("message")
                 ?.get("content")?.asString ?: "{\"questions\":[]}"
+            parseQuestions(text, w, h)
+        } catch (e: Exception) {
+            Log.e(TAG, "OpenRouter parse hatasi: ${e.message}")
+            ClaudeAnalysisResult(questions = emptyList())
+        }
+    }
 
-            val cleanJson = content
-                .replace("```json", "")
-                .replace("```", "")
-                .trim()
-
-            val parsed = JsonParser.parseString(cleanJson).asJsonObject
-            val questionsArray = parsed.getAsJsonArray("questions")
+    private fun parseQuestions(content: String, imgW: Int, imgH: Int): ClaudeAnalysisResult {
+        return try {
+            val clean = content.replace("```json", "").replace("```", "").trim()
+            val parsed = JsonParser.parseString(clean).asJsonObject
+            val arr = parsed.getAsJsonArray("questions")
                 ?: return ClaudeAnalysisResult(questions = emptyList())
 
-            val questions = questionsArray.mapNotNull { elem ->
+            val questions = arr.mapNotNull { elem ->
                 try {
                     val q = elem.asJsonObject
-                    val bbox = q.get("boundingBox")?.takeIf { !it.isJsonNull }?.let {
-                        val bb = it.asJsonObject
-                        BoundingBox(
-                            top = bb.get("top")?.asFloat ?: 0f,
-                            left = bb.get("left")?.asFloat ?: 0f,
-                            bottom = bb.get("bottom")?.asFloat ?: 1f,
-                            right = bb.get("right")?.asFloat ?: 1f
-                        )
-                    }
+                    val topPx = q.get("topPx")?.asInt ?: 0
+                    val bottomPx = q.get("bottomPx")?.asInt ?: imgH
+                    val bbox = BoundingBox(
+                        top = (topPx.toFloat() / imgH).coerceIn(0f, 1f),
+                        left = 0f,
+                        bottom = (bottomPx.toFloat() / imgH).coerceIn(0f, 1f),
+                        right = 1f
+                    )
                     ExtractedQuestion(
-                        questionNumber = q.get("questionNumber")?.asInt ?: 0,
+                        questionNumber = q.get("questionNumber")?.asInt ?: 1,
                         text = q.get("text")?.asString ?: "",
                         topic = q.get("topic")?.asString ?: "Genel Matematik",
                         subtopic = q.get("subtopic")?.asString ?: "",
@@ -197,21 +259,17 @@ Sayfa bossa veya soru yoksa: {"questions":[]}
                     null
                 }
             }
-
             ClaudeAnalysisResult(questions = questions)
         } catch (e: Exception) {
-            Log.e(TAG, "Response parse hatasi: ${e.message}")
+            Log.e(TAG, "JSON parse hatasi: ${e.message}")
             ClaudeAnalysisResult(questions = emptyList())
         }
     }
 
     private fun bitmapToBase64(bitmap: Bitmap): String {
-        val maxDimension = 1568
-        val scaledBitmap = if (bitmap.width > maxDimension || bitmap.height > maxDimension) {
-            val scale = minOf(
-                maxDimension.toFloat() / bitmap.width,
-                maxDimension.toFloat() / bitmap.height
-            )
+        val maxDim = 1568
+        val scaled = if (bitmap.width > maxDim || bitmap.height > maxDim) {
+            val scale = minOf(maxDim.toFloat() / bitmap.width, maxDim.toFloat() / bitmap.height)
             Bitmap.createScaledBitmap(
                 bitmap,
                 (bitmap.width * scale).toInt(),
@@ -219,19 +277,17 @@ Sayfa bossa veya soru yoksa: {"questions":[]}
                 true
             )
         } else bitmap
-
-        val outputStream = ByteArrayOutputStream()
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
-        return Base64.encodeToString(outputStream.toByteArray(), Base64.NO_WRAP)
+        val out = ByteArrayOutputStream()
+        scaled.compress(Bitmap.CompressFormat.JPEG, 85, out)
+        return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
     }
 
     fun cropQuestionImage(pageBitmap: Bitmap, boundingBox: BoundingBox): Bitmap {
-        val x = (boundingBox.left * pageBitmap.width).toInt().coerceAtLeast(0)
-        val y = (boundingBox.top * pageBitmap.height).toInt().coerceAtLeast(0)
-        val width = ((boundingBox.right - boundingBox.left) * pageBitmap.width).toInt()
-            .coerceAtMost(pageBitmap.width - x).coerceAtLeast(1)
-        val height = ((boundingBox.bottom - boundingBox.top) * pageBitmap.height).toInt()
-            .coerceAtMost(pageBitmap.height - y).coerceAtLeast(1)
-        return Bitmap.createBitmap(pageBitmap, x, y, width, height)
+        val pad = 8
+        val top = ((boundingBox.top * pageBitmap.height).toInt() - pad).coerceAtLeast(0)
+        val bottom = ((boundingBox.bottom * pageBitmap.height).toInt() + pad)
+            .coerceAtMost(pageBitmap.height)
+        val height = (bottom - top).coerceAtLeast(1)
+        return Bitmap.createBitmap(pageBitmap, 0, top, pageBitmap.width, height)
     }
 }

@@ -5,11 +5,13 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.mathbank.ai.ClaudeService
+import com.mathbank.data.model.ExtractedQuestion
 import com.mathbank.data.model.ProcessingProgress
 import com.mathbank.data.model.ProcessingStatus
 import com.mathbank.data.repository.QuestionRepository
 import com.mathbank.data.repository.SettingsManager
 import com.mathbank.pdf.PdfProcessor
+import com.mathbank.pdf.QuestionCropper
 import kotlinx.coroutines.*
 
 class ProcessingViewModel(
@@ -20,7 +22,6 @@ class ProcessingViewModel(
 
     companion object {
         private const val TAG = "ProcessingViewModel"
-        // Sayfalar arasi bekleme - rate limit icin
         private const val API_DELAY_MS = 4000L
     }
 
@@ -36,35 +37,39 @@ class ProcessingViewModel(
     private var processingJob: Job? = null
     private var totalQuestionsFound = 0
     private val pdfProcessor = PdfProcessor(application)
+    private val questionCropper = QuestionCropper()
 
     fun startProcessing(uri: Uri, pdfName: String) {
         processingJob = viewModelScope.launch {
             try {
-                val apiKey = settingsManager.getApiKey()
+                val apiKey = settingsManager.getActiveApiKey()
+                val selectedModel = settingsManager.getSelectedModel()
+
                 if (apiKey.isEmpty()) {
-                    _error.postValue("API anahtari bulunamadi. Lutfen ayarlardan ekleyin.")
+                    _error.postValue("API anahtari bulunamadi. Ayarlardan ekleyin.")
+                    updateProgress(0, 0, ProcessingStatus.ERROR)
                     return@launch
                 }
 
-                val claude = ClaudeService(apiKey)
+                val modelName = if (selectedModel == SettingsManager.MODEL_GEMINI) "Gemini" else "OpenRouter"
+                val aiService = ClaudeService(apiKey, selectedModel)
                 totalQuestionsFound = 0
 
                 updateProgress(0, 0, ProcessingStatus.PREPARING)
                 val totalPages = pdfProcessor.getPageCount(uri)
                 addLog("PDF acildi: $pdfName ($totalPages sayfa)")
+                addLog("Model: $modelName")
 
                 if (totalPages == 0) {
                     _error.postValue("PDF okunamadi veya bos.")
+                    updateProgress(0, 0, ProcessingStatus.ERROR)
                     return@launch
                 }
 
                 updateProgress(0, totalPages, ProcessingStatus.PROCESSING)
 
                 for (pageIndex in 0 until totalPages) {
-                    if (!isActive) {
-                        addLog("Islem iptal edildi")
-                        break
-                    }
+                    if (!isActive) { addLog("Islem iptal edildi"); break }
 
                     val pageNumber = pageIndex + 1
                     addLog("Sayfa $pageNumber/$totalPages analiz ediliyor...")
@@ -72,46 +77,116 @@ class ProcessingViewModel(
 
                     val pageResult = pdfProcessor.renderPage(uri, pageIndex)
                     if (pageResult == null) {
-                        addLog("  Sayfa $pageNumber render edilemedi, atlaniyor")
+                        addLog("  Sayfa $pageNumber render edilemedi")
                         continue
                     }
 
-                    val result = claude.analyzePage(pageResult.bitmap, pageNumber, pdfName)
+                    // OCR ile soru bolgelerini tespit et
+                    val questionRegions = try {
+                        questionCropper.cropQuestions(pageResult.bitmap)
+                    } catch (e: Exception) {
+                        addLog("  OCR hatasi: ${e.message}")
+                        emptyList()
+                    }
 
-                    result.onSuccess { analysis ->
-                        val questions = analysis.questions
-                        addLog("  ${questions.size} soru bulundu")
-
+                    if (questionRegions.isNotEmpty()) {
+                        // OCR BASARILI - her bolgeyi ayri kaydet
+                        addLog("  OCR: ${questionRegions.size} soru bolgesi bulundu")
                         updateProgress(pageIndex, totalPages, ProcessingStatus.SAVING)
-                        for (extracted in questions) {
+
+                        for (region in questionRegions) {
                             if (!isActive) break
 
-                            val croppedBitmap = extracted.boundingBox?.let { bbox ->
-                                claude.cropQuestionImage(pageResult.bitmap, bbox)
+                            // Kirpilmis bölgeyi AI ile analiz et
+                            val result = aiService.analyzePage(region.bitmap, pageNumber, pdfName)
+
+                            result.onSuccess { analysis ->
+                                val extracted = if (analysis.questions.isNotEmpty()) {
+                                    analysis.questions.first().copy(
+                                        questionNumber = region.questionNumber
+                                    )
+                                } else {
+                                    ExtractedQuestion(
+                                        questionNumber = region.questionNumber,
+                                        text = "Soru ${region.questionNumber}",
+                                        topic = "Genel Matematik",
+                                        subtopic = "",
+                                        difficulty = "MEDIUM",
+                                        options = emptyList(),
+                                        correctAnswer = null,
+                                        hasFigure = true,
+                                        questionType = "MULTIPLE_CHOICE",
+                                        boundingBox = null
+                                    )
+                                }
+                                // OCR'in kirptigi bitmap kaydediliyor
+                                repository.saveQuestion(
+                                    extracted = extracted,
+                                    pageBitmap = pageResult.bitmap,
+                                    croppedBitmap = region.bitmap,
+                                    sourcePdf = pdfName,
+                                    pageNumber = pageNumber
+                                )
+                                totalQuestionsFound++
+                                addLog("    Soru ${region.questionNumber} kaydedildi")
+
+                            }.onFailure {
+                                // AI hata verse bile OCR gorselini kaydet
+                                repository.saveQuestion(
+                                    extracted = ExtractedQuestion(
+                                        questionNumber = region.questionNumber,
+                                        text = "Soru ${region.questionNumber}",
+                                        topic = "Genel Matematik",
+                                        subtopic = "",
+                                        difficulty = "MEDIUM",
+                                        options = emptyList(),
+                                        correctAnswer = null,
+                                        hasFigure = true,
+                                        questionType = "MULTIPLE_CHOICE",
+                                        boundingBox = null
+                                    ),
+                                    pageBitmap = pageResult.bitmap,
+                                    croppedBitmap = region.bitmap,
+                                    sourcePdf = pdfName,
+                                    pageNumber = pageNumber
+                                )
+                                totalQuestionsFound++
+                                addLog("    Soru ${region.questionNumber} gorsel kaydedildi")
                             }
 
-                            repository.saveQuestion(
-                                extracted = extracted,
-                                pageBitmap = pageResult.bitmap,
-                                croppedBitmap = croppedBitmap,
-                                sourcePdf = pdfName,
-                                pageNumber = pageNumber
-                            )
-                            totalQuestionsFound++
+                            if (isActive) delay(API_DELAY_MS)
                         }
 
-                        updateProgress(pageIndex + 1, totalPages, ProcessingStatus.PROCESSING)
+                    } else {
+                        // OCR BULAMADI - AI ile analiz
+                        addLog("  OCR soru bulamadi, AI analizi yapiliyor...")
+                        val result = aiService.analyzePage(pageResult.bitmap, pageNumber, pdfName)
 
-                    }.onFailure { error ->
-                        addLog("  Sayfa $pageNumber hatasi: ${error.message}")
-                        Log.e(TAG, "Page $pageNumber error", error)
+                        result.onSuccess { analysis ->
+                            addLog("  AI: ${analysis.questions.size} soru bulundu")
+                            updateProgress(pageIndex, totalPages, ProcessingStatus.SAVING)
+                            for (extracted in analysis.questions) {
+                                if (!isActive) break
+                                val croppedBitmap = extracted.boundingBox?.let { bbox ->
+                                    aiService.cropQuestionImage(pageResult.bitmap, bbox)
+                                }
+                                repository.saveQuestion(
+                                    extracted = extracted,
+                                    pageBitmap = pageResult.bitmap,
+                                    croppedBitmap = croppedBitmap,
+                                    sourcePdf = pdfName,
+                                    pageNumber = pageNumber
+                                )
+                                totalQuestionsFound++
+                            }
+                        }.onFailure { err ->
+                            addLog("  Sayfa $pageNumber hatasi: ${err.message}")
+                        }
                     }
 
                     pageResult.bitmap.recycle()
-
-                    if (pageIndex < totalPages - 1 && isActive) {
-                        delay(API_DELAY_MS)
-                    }
+                    updateProgress(pageIndex + 1, totalPages, ProcessingStatus.PROCESSING)
+                    if (pageIndex < totalPages - 1 && isActive) delay(2000L)
                 }
 
                 if (isActive) {
@@ -130,27 +205,22 @@ class ProcessingViewModel(
         }
     }
 
-    fun cancelProcessing() {
-        processingJob?.cancel()
-    }
-
+    fun cancelProcessing() { processingJob?.cancel() }
     fun isProcessing(): Boolean = processingJob?.isActive == true
 
     private fun updateProgress(current: Int, total: Int, status: ProcessingStatus) {
-        _progress.postValue(
-            ProcessingProgress(
-                currentPage = current,
-                totalPages = total,
-                questionsFound = totalQuestionsFound,
-                status = status
-            )
-        )
+        _progress.postValue(ProcessingProgress(
+            currentPage = current,
+            totalPages = total,
+            questionsFound = totalQuestionsFound,
+            status = status
+        ))
     }
 
     private fun addLog(message: String) {
-        val currentLogs = _currentPageLog.value ?: mutableListOf()
-        currentLogs.add(message)
-        _currentPageLog.postValue(currentLogs)
+        val logs = _currentPageLog.value ?: mutableListOf()
+        logs.add(message)
+        _currentPageLog.postValue(logs)
         Log.d(TAG, message)
     }
 

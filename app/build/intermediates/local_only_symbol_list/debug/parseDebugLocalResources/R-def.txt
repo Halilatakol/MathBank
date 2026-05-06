@@ -36,10 +36,9 @@ id btnPrevious
 id btnQuestionBank
 id btnReturnHome
 id btnReviewAnswers
-id btnSaveApiKey
+id btnSave
 id btnSelectPdf
 id btnSettings
-id btnToggleApiKey
 id card
 id chipAllDifficulties
 id chipDifficulty
@@ -50,6 +49,8 @@ id chipMedium
 id emptyViewQuestions
 id emptyViewTests
 id etApiKey
+id etGeminiKey
+id etOpenRouterKey
 id etSearch
 id etTestName
 id ivDelete
@@ -59,6 +60,8 @@ id progressBar
 id progressScore
 id progressTest
 id questionContainer
+id radioGemini
+id radioOpenRouter
 id rbA
 id rbB
 id rbC

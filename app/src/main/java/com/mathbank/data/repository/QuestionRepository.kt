@@ -11,8 +11,6 @@ class QuestionRepository(private val db: AppDatabase) {
     private val questionDao = db.questionDao()
     private val testDao = db.testDao()
 
-    // ──────────────── QUESTIONS ────────────────
-
     suspend fun saveQuestion(
         extracted: ExtractedQuestion,
         pageBitmap: Bitmap?,
@@ -20,11 +18,19 @@ class QuestionRepository(private val db: AppDatabase) {
         sourcePdf: String,
         pageNumber: Int
     ): Question {
+        val questionImage: ByteArray? = when {
+            croppedBitmap != null && isGoodCrop(croppedBitmap, pageBitmap) ->
+                croppedBitmap.toByteArray(quality = 88)
+            pageBitmap != null ->
+                pageBitmap.toByteArray(quality = 70)
+            else -> null
+        }
+
         val question = Question(
             id = UUID.randomUUID().toString(),
             text = extracted.text,
-            imageData = croppedBitmap?.toByteArray(),
-            fullPageImageData = pageBitmap?.toByteArray(quality = 60),
+            imageData = questionImage,
+            fullPageImageData = pageBitmap?.toByteArray(quality = 50),
             topic = extracted.topic,
             subtopic = extracted.subtopic,
             difficulty = Difficulty.fromString(extracted.difficulty),
@@ -43,10 +49,13 @@ class QuestionRepository(private val db: AppDatabase) {
         return question
     }
 
-    suspend fun saveQuestions(questions: List<Question>) {
-        questionDao.insertAll(questions)
+    private fun isGoodCrop(cropped: Bitmap, page: Bitmap?): Boolean {
+        if (cropped.height < 80) return false
+        if (page == null) return true
+        return (cropped.height.toFloat() / page.height) < 0.92f
     }
 
+    suspend fun saveQuestions(questions: List<Question>) = questionDao.insertAll(questions)
     suspend fun getAllQuestions(): List<Question> = questionDao.getAll()
 
     suspend fun getFilteredQuestions(filter: QuestionFilter): List<Question> {
@@ -61,11 +70,8 @@ class QuestionRepository(private val db: AppDatabase) {
     }
 
     suspend fun getAllTopics(): List<String> = questionDao.getAllTopics()
-
     suspend fun getSubtopics(topic: String): List<String> = questionDao.getSubtopics(topic)
-
     suspend fun getTotalCount(): Int = questionDao.getTotalCount()
-
     suspend fun getCountByDifficulty(difficulty: Difficulty): Int =
         questionDao.getCountByDifficulty(difficulty.name)
 
@@ -83,10 +89,7 @@ class QuestionRepository(private val db: AppDatabase) {
     }
 
     suspend fun deleteQuestion(question: Question) = questionDao.delete(question)
-
     suspend fun updateQuestion(question: Question) = questionDao.update(question)
-
-    // ──────────────── TESTS ────────────────
 
     suspend fun createTest(
         name: String,
@@ -122,17 +125,10 @@ class QuestionRepository(private val db: AppDatabase) {
     }
 
     suspend fun getAllTests(): List<Test> = testDao.getAllTests()
-
     suspend fun getTestById(id: String): Test? = testDao.getTestById(id)
+    suspend fun getQuestionsByIds(ids: List<String>): List<Question> = questionDao.getByIds(ids)
 
-    suspend fun getQuestionsByIds(ids: List<String>): List<Question> =
-        questionDao.getByIds(ids)
-
-    suspend fun saveTestResult(
-        testId: String,
-        answers: List<TestAnswer>,
-        score: Int
-    ) {
+    suspend fun saveTestResult(testId: String, answers: List<TestAnswer>, score: Int) {
         testDao.insertAnswers(answers)
         val test = testDao.getTestById(testId) ?: return
         testDao.updateTest(test.copy(
@@ -149,8 +145,6 @@ class QuestionRepository(private val db: AppDatabase) {
         testDao.deleteAnswersForTest(test.id)
         testDao.deleteTest(test)
     }
-
-    // ──────────────── HELPERS ────────────────
 
     private fun Bitmap.toByteArray(quality: Int = 80): ByteArray {
         val stream = ByteArrayOutputStream()
