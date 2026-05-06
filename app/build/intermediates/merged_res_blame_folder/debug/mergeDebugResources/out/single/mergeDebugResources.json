@@ -1,54 +1,50 @@
 [
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_activity_main.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\activity_main.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_activity_create_test.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/activity_create_test.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_activity_processing.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\activity_processing.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_activity_main.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/activity_main.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_activity_question_bank.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\activity_question_bank.xml"
+        "merged": "com.mathbank.app-debug-54:/drawable_bg_option.xml.flat",
+        "source": "com.mathbank.app-main-56:/drawable/bg_option.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_activity_create_test.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\activity_create_test.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_activity_question_detail.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/activity_question_detail.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_activity_question_detail.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\activity_question_detail.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_activity_settings.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/activity_settings.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_activity_test_result.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\activity_test_result.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_activity_solve_test.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/activity_solve_test.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_dialog_api_key.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\dialog_api_key.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_activity_question_bank.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/activity_question_bank.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_item_test.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\item_test.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_dialog_api_key.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/dialog_api_key.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_activity_settings.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\activity_settings.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_item_question.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/item_question.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_activity_solve_test.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\activity_solve_test.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_item_test.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/item_test.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\drawable_bg_option.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\drawable\\bg_option.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_activity_test_result.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/activity_test_result.xml"
     },
     {
-        "merged": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-debug-52:\\layout_item_question.xml.flat",
-        "source": "C:\\Users\\hz\\.gradle\\daemon\\8.10\\com.mathbank.app-main-54:\\layout\\item_question.xml"
-    },
-    {
-        "merged": "com.mathbank.app-debug-52:/layout_activity_settings.xml.flat",
-        "source": "com.mathbank.app-main-54:/layout/activity_settings.xml"
+        "merged": "com.mathbank.app-debug-54:/layout_activity_processing.xml.flat",
+        "source": "com.mathbank.app-main-56:/layout/activity_processing.xml"
     }
 ]

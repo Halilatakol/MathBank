@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent">#FF6F00</color>
+    <color name="accent_light">#FFA000</color>
+    <color name="background">#F5F6FA</color>
+    <color name="black">#000000</color>
+    <color name="difficulty_easy">#E8F5E9</color>
+    <color name="difficulty_easy_text">#2E7D32</color>
+    <color name="difficulty_hard">#FFEBEE</color>
+    <color name="difficulty_hard_text">#C62828</color>
+    <color name="difficulty_medium">#FFF8E1</color>
+    <color name="difficulty_medium_text">#F57F17</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="error">#E53935</color>
+    <color name="info">#1E88E5</color>
+    <color name="primary">#1A237E</color>
+    <color name="primary_dark">#0D1752</color>
+    <color name="primary_light">#3949AB</color>
+    <color name="success">#43A047</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F0F1F8</color>
+    <color name="text_hint">#90A4AE</color>
+    <color name="text_primary">#1A237E</color>
+    <color name="text_secondary">#546E7A</color>
+    <color name="warning">#FB8C00</color>
+    <color name="white">#FFFFFF</color>
+    <string name="all">Tümü</string>
+    <string name="app_name">MathBank</string>
+    <string name="cancel">İptal</string>
+    <string name="correct">Doğru</string>
+    <string name="create_test">Test Oluştur</string>
+    <string name="done">Tamam</string>
+    <string name="easy">Kolay</string>
+    <string name="empty">Boş</string>
+    <string name="finish">Bitir</string>
+    <string name="hard">Zor</string>
+    <string name="medium">Orta</string>
+    <string name="next">Sonraki</string>
+    <string name="previous">Önceki</string>
+    <string name="processing">İşleniyor...</string>
+    <string name="question_bank">Soru Bankası</string>
+    <string name="save">Kaydet</string>
+    <string name="score">Puan</string>
+    <string name="select_pdf">PDF Seç</string>
+    <string name="settings">Ayarlar</string>
+    <string name="wrong">Yanlış</string>
+    <style name="Style.MathBank.TopicChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="chipBackgroundColor">@color/surface_variant</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+    <style name="Theme.MathBank" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+
+        
+        <item name="materialCardViewStyle">@style/Widget.MathBank.CardView</item>
+
+        
+        <item name="materialButtonStyle">@style/Widget.MathBank.Button</item>
+
+        
+        <item name="chipStyle">@style/Widget.MathBank.Chip</item>
+    </style>
+    <style name="Theme.MathBank.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/primary</item>
+        <item name="titleTextColor">@color/white</item>
+    </style>
+    <style name="Widget.MathBank.Button" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">10dp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+    </style>
+    <style name="Widget.MathBank.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+    <style name="Widget.MathBank.Chip" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipCornerRadius">20dp</item>
+    </style>
+</resources>

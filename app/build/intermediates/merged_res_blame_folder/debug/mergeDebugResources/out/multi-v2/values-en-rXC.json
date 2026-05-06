@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.mathbank.app-mergeDebugResources-50:/values-en-rXC/values-en-rXC.xml",
+            "outputFile": "com.mathbank.app-mergeDebugResources-52:/values-en-rXC/values-en-rXC.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\hz\\.gradle\\caches\\8.10\\transforms\\ee08966642e9bfe422bf0982ad3afa02\\transformed\\core-1.15.0\\res\\values-en-rXC\\values-en-rXC.xml",
+                    "source": "C:\\Users\\hz\\.gradle\\caches\\8.13\\transforms\\1c69bb5d0fe0dd5735d1db41d3a249f0\\transformed\\core-1.15.0\\res\\values-en-rXC\\values-en-rXC.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\hz\\.gradle\\caches\\8.10\\transforms\\7bf1d6047e943accff0f056ff76cc43b\\transformed\\appcompat-1.7.0\\res\\values-en-rXC\\values-en-rXC.xml",
+                    "source": "C:\\Users\\hz\\.gradle\\caches\\8.13\\transforms\\2a4c1f24164905e71382dccf9c1f308d\\transformed\\appcompat-1.7.0\\res\\values-en-rXC\\values-en-rXC.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
